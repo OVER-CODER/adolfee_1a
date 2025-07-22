@@ -66,11 +66,11 @@ def validate_output(data):
         return False
 
 def process_pdfs():
-    input_dir = Path("app/input")
-    output_dir = Path("app/output")
+    input_dir = Path("input")
+    output_dir = Path("output")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    pdf_files = list(input_dir.glob("*.pdf"))
+    pdf_files = [f for f in input_dir.iterdir() if f.is_file() and f.suffix.lower() == ".pdf"]
     print(f"Found {len(pdf_files)} PDF(s) for processing.")
 
     total_start_time = time.time()

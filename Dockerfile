@@ -1,9 +1,18 @@
-FROM --platform=linux/amd64 python:3.10
+FROM --platform=linux/amd64 python:3.10-slim
 
 WORKDIR /app
 
-# Copy the processing script
-COPY process_pdfs.py .
+# Install system dependencies (for PyMuPDF)
+RUN apt-get update && apt-get install -y \
+    libmupdf-dev build-essential \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Run the script
-CMD ["python", "process_pdfs.py"] 
+# Copy code & schema
+COPY app/process_pdfs.py .
+COPY app/schema/ ./schema/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir PyMuPDF jsonschema
+
+# Command to run script
+CMD ["python", "process_pdfs.py"]
